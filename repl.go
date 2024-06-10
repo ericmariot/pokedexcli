@@ -33,7 +33,7 @@ func startRepl() {
 type cliCommand struct {
 	name string
 	desc string
-	cb   func()
+	cb   func() error
 }
 
 func getCommands() map[string]cliCommand {
