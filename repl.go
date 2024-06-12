@@ -10,7 +10,7 @@ import (
 type cliCommand struct {
 	name string
 	desc string
-	cb   func(*config) error
+	cb   func(*config, ...string) error
 }
 
 func startRepl(cfg *config) {
@@ -26,6 +26,10 @@ func startRepl(cfg *config) {
 		}
 
 		commandName := formatted[0]
+		args := []string{}
+		if len(formatted) > 1 {
+			args = formatted[1:]
+		}
 
 		commands := getCommands()
 
@@ -35,7 +39,7 @@ func startRepl(cfg *config) {
 			continue
 		}
 
-		err := command.cb(cfg)
+		err := command.cb(cfg, args...)
 		if err != nil {
 			fmt.Println(err)
 		}
@@ -51,11 +55,7 @@ func getCommands() map[string]cliCommand {
 			desc: "Prints the help menu",
 			cb:   callbackHelp,
 		},
-		"exit": {
-			name: "exit",
-			desc: "Exit the Pokedex",
-			cb:   callbackExit,
-		},
+
 		"map": {
 			name: "map",
 			desc: "List 20 location areas",
@@ -65,6 +65,16 @@ func getCommands() map[string]cliCommand {
 			name: "mapb",
 			desc: "List 20 previous location areas",
 			cb:   callbackMapb,
+		},
+		"explore": {
+			name: "explore {location_area}",
+			desc: "List pokemons on a given area",
+			cb:   callbackExplore,
+		},
+		"exit": {
+			name: "exit",
+			desc: "Exit the Pokedex",
+			cb:   callbackExit,
 		},
 	}
 }
